@@ -1,0 +1,16 @@
+name: rCoef-api
+channels:
+  - conda-forge
+  - defaults
+dependencies:
+  - python=3.9
+  - fastapi
+  - uvicorn
+  - scikit-learn
+  - numpy
+  - pandas
+  - joblib
+  - pydantic
+  - pytest
+  - requests
+  - gunicorn  # Optional, for production deployments
