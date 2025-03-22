@@ -1,6 +1,6 @@
 import joblib
 import numpy as np
-from pydantic import BaseModel
+from app.models import ModelInput
 
 # Load models
 linear_model = joblib.load("models/ml/model/linear_reg.pkl")
@@ -16,24 +16,19 @@ categorical_cols = ["gender", "maritalStatus", "state"]
 numerical_cols = ["age", "loanAmount", "tenorInDays"]
 feature_order = categorical_cols + numerical_cols  # Ensures model receives input in the correct order
 
-# Define request schema
-class ModelInput(BaseModel):
-    model_type: str
-    features: dict  
-
 
 def predict(data: ModelInput):
-
     """Predict based on input data after encoding and scaling."""
     features = data.features
     ml_model = data.model_type
+
+    print('features', features)
 
     # Ensure all required features are present
     missing_cols = [col for col in feature_order if col not in features]
     if missing_cols:
         return {"error": f"Missing required columns: {missing_cols}"}
-    
-    
+
     # Encode categorical variables using stored encoders
     encoded_data = []
     for col in categorical_cols:
@@ -53,12 +48,27 @@ def predict(data: ModelInput):
     # Combine encoded categorical + scaled numerical features
     final_input = np.array(encoded_data + scaled_numerical_data).reshape(1, -1)
 
-
+    # Perform prediction
     if ml_model == "linear":
-        return linear_model.predict(final_input).tolist()
+        predictionRes = linear_model.predict(final_input).tolist()
+        return {
+            "repaymentCoefficient": str(int(predictionRes[0]))+'%',
+            "meta": "Tested with about 6,500 dataset. Linear Regression model predict correctly 5.7% of the time",
+            "message": "This user has a "+str(int(predictionRes[0]))+"% chance of repaying ₦"+ str(features.get('loanAmount', 0))+" loan" 
+        }
     elif ml_model == "random_forest":
-        return random_forest_model.predict(final_input).tolist()
+        predictionRes = random_forest_model.predict(final_input).tolist()
+        return {
+            "repaymentCoefficient": str(int(predictionRes[0]))+'%',
+            "meta": "Tested with about 6,500 dataset. Random Forest Network model predict correctly 26.9% of the time",
+            "message": "This user has a "+str(int(predictionRes[0]))+"% chance of repaying ₦"+ str(features.get('loanAmount', 0))+" loan" 
+        }
     elif ml_model == "neural_network":
-        return random_forest_model.predict(final_input).tolist()
+        predictionRes = neural_network_model.predict(final_input).tolist()
+        return {
+            "repaymentCoefficient": str(int(predictionRes[0]))+'%',
+            "meta": "Tested with about 6,500 dataset. Neural Network model predict correctly 8.5% of the time",
+            "message": "This user has a "+str(int(predictionRes[0]))+"% chance of repaying ₦"+ str(features.get('loanAmount', 0))+" loan" 
+        }
     else:
         return {"error": "Invalid model_type"}
