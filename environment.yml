@@ -9,8 +9,10 @@ dependencies:
   - scikit-learn=1.2.2
   - numpy
   - pandas
+  - openai
   - joblib
   - pydantic
+  - python-dotenv
   - pytest
   - requests
   - gunicorn  # Optional, for production deployments

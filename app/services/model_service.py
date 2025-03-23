@@ -53,21 +53,21 @@ def predict(data: ModelInput):
         predictionRes = linear_model.predict(final_input).tolist()
         return {
             "repaymentCoefficient": str(int(predictionRes[0]))+'%',
-            "meta": "Tested with about 6,500 dataset. Linear Regression model predict correctly 5.7% of the time",
+            "meta": "Tested with 6,339 dataset. Linear Regression model predict correctly 5.7% of the time",
             "message": "This user has a "+str(int(predictionRes[0]))+"% chance of repaying ₦"+ str(features.get('loanAmount', 0))+" loan" 
         }
     elif ml_model == "random_forest":
         predictionRes = random_forest_model.predict(final_input).tolist()
         return {
             "repaymentCoefficient": str(int(predictionRes[0]))+'%',
-            "meta": "Tested with about 6,500 dataset. Random Forest Network model predict correctly 26.9% of the time",
+            "meta": "Tested with 6,339 dataset. Random Forest Network model predict correctly 26.9% of the time",
             "message": "This user has a "+str(int(predictionRes[0]))+"% chance of repaying ₦"+ str(features.get('loanAmount', 0))+" loan" 
         }
     elif ml_model == "neural_network":
         predictionRes = neural_network_model.predict(final_input).tolist()
         return {
             "repaymentCoefficient": str(int(predictionRes[0]))+'%',
-            "meta": "Tested with about 6,500 dataset. Neural Network model predict correctly 8.5% of the time",
+            "meta": "Tested with 6,339 dataset. Neural Network model predict correctly 8.5% of the time",
             "message": "This user has a "+str(int(predictionRes[0]))+"% chance of repaying ₦"+ str(features.get('loanAmount', 0))+" loan" 
         }
     else:
