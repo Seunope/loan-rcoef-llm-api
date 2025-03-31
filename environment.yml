@@ -1,4 +1,4 @@
-name: rCoef-api
+name: roef-api
 channels:
   - conda-forge
   - defaults
@@ -6,11 +6,13 @@ dependencies:
   - python=3.9
   - fastapi
   - uvicorn
-  - scikit-learn
+  - scikit-learn=1.2.2
   - numpy
   - pandas
+  - openai
   - joblib
   - pydantic
+  - python-dotenv
   - pytest
   - requests
   - gunicorn  # Optional, for production deployments
