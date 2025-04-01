@@ -1,0 +1,9 @@
+services:
+  - type: web
+    name: rcoef-api
+    runtime: python
+    envVars:
+      - key: PORT
+        value: 8000
+    buildCommand: "bash start.sh"
+    startCommand: "bash start.sh"
