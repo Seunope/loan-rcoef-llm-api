@@ -1,6 +1,7 @@
 import joblib
 import numpy as np
 from app.models import ModelInput
+from fastapi import HTTPException
 
 # Load models
 linear_model = joblib.load("models/ml/model/linear_reg.pkl")
@@ -48,8 +49,9 @@ def predict(data: ModelInput):
     # Combine encoded categorical + scaled numerical features
     final_input = np.array(encoded_data + scaled_numerical_data).reshape(1, -1)
 
+
     # Perform prediction
-    if ml_model == "linear":
+    if ml_model == "linear_regression":
         predictionRes = linear_model.predict(final_input).tolist()
         return {
             "repaymentCoefficient": str(int(predictionRes[0]))+'%',
@@ -71,4 +73,8 @@ def predict(data: ModelInput):
             "message": "This user has a "+str(int(predictionRes[0]))+"% chance of repaying ₦"+ str(features.get('loanAmount', 0))+" loan" 
         }
     else:
-        return {"error": "Invalid model_type"}
+        valid_models = ["linear_regression", "random_forest", "neural_network"]
+        raise HTTPException(
+            status_code=400, 
+            detail=f"Invalid model_type: {ml_model}. Choose from {valid_models}"
+        )

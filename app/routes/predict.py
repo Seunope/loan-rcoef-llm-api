@@ -11,7 +11,7 @@ def get_prediction(data: ModelInput):
 
 
 # @router.post("/open-api/predict", response_model=LoanResponse)
-@router.post("/open-api/predict", response_model=None)
+@router.post("/open-ai/predict", response_model=None)
 async def get_fine_tune_open_ai_prediction(data: LoanRequest):  
     prediction = await predict_repayment(data) 
     print('prediction', prediction)
