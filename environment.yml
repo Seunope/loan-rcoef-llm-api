@@ -1,4 +1,4 @@
-name: roef-api
+name: rcoef-api
 channels:
   - conda-forge
   - defaults

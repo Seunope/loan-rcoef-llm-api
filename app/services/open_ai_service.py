@@ -1,7 +1,7 @@
 from fastapi import FastAPI, HTTPException
 from pydantic import BaseModel, Field
 from typing import Optional
-import openai
+from openai import OpenAI
 import os
 from dotenv import load_dotenv
 
@@ -14,7 +14,9 @@ load_dotenv()
 app = FastAPI(title="Loan Repayment Prediction API")
 
 # Configure OpenAI client
-client = openai.OpenAI(api_key=os.getenv("OPENAI_API_KEY"))
+# openai = OpenAI()
+client = OpenAI(api_key=os.getenv("OPENAI_API_KEY"))
+print('DDDD', os.getenv("OPENAI_API_KEY"))
 # client = openai.OpenAI()
 
 
@@ -33,18 +35,24 @@ async def predict_repayment(dto: LoanRequest):
         prompt = f"""User Details:
             - Marital Status: {dto.maritalStatus}
             - Gender: {dto.gender}
-            - Location: {dto.state} Nigeria
+            - Location: {dto.state}, Nigeria
             - Age: {dto.age}
             - Loan Amount: {dto.loanAmount}
             - Loan Tenure: {dto.tenorInDays} days.
 
             Repayment coefficient is """
+        
+        system_message = "Task: Predict loan repayment coefficient (0-100)\n"
+        system_message += "Guidelines:\n"
+        system_message += "- Never predict exactly 100 (use 95-99 for perfect cases)\n"
+        system_message += "- Typical range: 20-95\n"
+        system_message += "- Lower values indicate higher risk"
 
         # Create the messages format for the OpenAI API
         messages = [
             {
                 "role": "system",
-                "content": "You predict the loan repayment coefficient (0-100). 100 implies a high likelihood of repaying a loan, and 0 implies a very low likelihood. Reply only with the repayment coefficient value, no explanation."
+                "content": system_message,
             },
             {
                 "role": "user",
@@ -52,11 +60,15 @@ async def predict_repayment(dto: LoanRequest):
             },
             {
                 "role": "assistant",
-                "content": "Repayment Coefficient is"
+                "content": "Correct answer is"
             }
         ]
 
         print('FINE_TUNED_MODEL',FINE_TUNED_MODEL)
+        # print('OPENAI_API_KEY',OPENAI_API_KEY)
+        print('OPENAI_API_KEY',client.api_key)
+        print(messages)
+
         # Call the OpenAI API
         response = client.chat.completions.create(
             model=FINE_TUNED_MODEL,
@@ -65,22 +77,16 @@ async def predict_repayment(dto: LoanRequest):
             seed=42,
             max_tokens=7
         )
-        #  response = openai.chat.completions.create(
-        #         model=self.fine_tuned_model_name, 
-        #         messages=self._messages_for_test(item),
-        #         seed=42,
-        #         max_tokens=7
-        #     )
 
-        # Extract the prediction from the response
-        print("OPME", response.choices[0].message.content)
-        prediction_text = response.choices[0].message.content.strip() or '0'
+
+
+        prediction_text = response.choices[0].message.content.strip() 
         print('prediction_text', prediction_text)
         
         # Process the result to extract just the number
         try:
-            if prediction_text.lower().startswith("repayment coefficient is"):
-                prediction_text = prediction_text[len("repayment coefficient is"):].strip()
+            if prediction_text.lower().startswith("Correct answer is"):
+                prediction_text = prediction_text[len("Correct answer is"):].strip()
             
             coefficient = int(prediction_text)
             
