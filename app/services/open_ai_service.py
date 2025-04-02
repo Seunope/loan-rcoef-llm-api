@@ -16,7 +16,7 @@ app = FastAPI(title="Loan Repayment Prediction API")
 # Configure OpenAI client
 # openai = OpenAI()
 client = OpenAI(api_key=os.getenv("OPENAI_API_KEY"))
-print('DDDD', os.getenv("OPENAI_API_KEY"))
+# print('DDDD', os.getenv("OPENAI_API_KEY"))
 # client = openai.OpenAI()
 
 
