@@ -16,3 +16,6 @@ dependencies:
   - pytest
   - requests
   - gunicorn  # Optional, for production deployments
+  - pip
+  - pip:
+    - modal

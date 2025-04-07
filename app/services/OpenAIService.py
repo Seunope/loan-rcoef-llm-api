@@ -25,7 +25,7 @@ FINE_TUNED_MODEL = os.getenv("FINE_TUNED_MODEL")
 
 
 
-async def predict_repayment(dto: LoanRequest):
+async def predict(dto: LoanRequest):
     """
     Predicts the loan repayment coefficient for an applicant
     using a fine-tuned OpenAI model.
@@ -66,7 +66,7 @@ async def predict_repayment(dto: LoanRequest):
 
         print('FINE_TUNED_MODEL',FINE_TUNED_MODEL)
         # print('OPENAI_API_KEY',OPENAI_API_KEY)
-        print('OPENAI_API_KEY',client.api_key)
+        # print('OPENAI_API_KEY',client.api_key)
         print(messages)
 
         # Call the OpenAI API
