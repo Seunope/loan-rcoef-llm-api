@@ -41,7 +41,7 @@ async def predict(dto: LoanRequest):
 
             return LoanResponse(
                 repaymentCoefficient=f"{str(coefficient)}", 
-                meta="Tested with 6,339 dataset. OpenAi Finetune model predicts correctly 40.0% of the time",
+                meta="Tested with 6,339 dataset. Llama Finetune model predicts correctly 40.0% of the time",
                 message=f"This user has a {str(coefficient)}% chance of repaying ₦{dto.loanAmount} loan"
             )
 
