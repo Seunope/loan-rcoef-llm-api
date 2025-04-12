@@ -1,7 +1,7 @@
 from fastapi import APIRouter
 from app.models import LoanRequest, LoanResponse, ModelInput
 from app.services import MLService
-from app.services import OpenAIService
+from app.services.OpenAIService import OpenAIService
 from app.services import LlamaService
 
 
@@ -15,7 +15,8 @@ def get_prediction(data: ModelInput):
 # @router.post("/open-api/predict", response_model=LoanResponse)
 @router.post("/open-ai/predict", response_model=None)
 async def get_fine_tune_open_ai_prediction(data: LoanRequest):  
-    prediction = await OpenAIService.predict(data) 
+    openai_service = OpenAIService(data)
+    prediction = await openai_service.predict() 
     print('prediction', prediction)
     return {"model": 'OpenAi Fine tune model', "prediction": prediction}
 

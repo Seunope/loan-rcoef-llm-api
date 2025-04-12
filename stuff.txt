@@ -1,5 +1,7 @@
 conda env update --file environment.yml --prune
 
+conda activate rcoef-api
+
 uvicorn app.main:app --reload --host 0.0.0.0 --port 8001
 
 conda list --export > requirements.txt
