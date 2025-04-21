@@ -35,14 +35,18 @@ async def predict(dto: LoanRequest):
             #     prediction_text = prediction_text[len("Correct answer is"):].strip()
             
             coefficient = int(reply)
+            print('coefficient', coefficient)
             
             # Ensure the coefficient is within the expected range
             coefficient = max(0, min(100, coefficient))
+            riskLevel = "high" if coefficient <= 40 else "medium" if coefficient <= 70 else "acceptable"
 
-            return LoanResponse(
-                repaymentCoefficient=f"{str(coefficient)}", 
-                meta="Tested with 6,339 dataset. Llama Finetune model predicts correctly 40.0% of the time",
-                message=f"This user has a {str(coefficient)}% chance of repaying ₦{dto.loanAmount} loan"
+            return LoanResponse (
+                repaymentProbabilityScore=f"{str(coefficient)}", 
+                meta="Llama Finetune model predicts correctly 40.0% of the time",
+                message=f"This user has a {str(coefficient)}% chance of repaying ₦{dto.loanAmount} loan",
+                riskLevel=riskLevel,
+                recommendation= "Available for only OpenAI models",
             )
 
         except ValueError:
